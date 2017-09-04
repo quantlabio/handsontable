@@ -6,6 +6,8 @@ export const ERROR_NULL = 'NULL';
 export const ERROR_NUM = 'NUM';
 export const ERROR_REF = 'REF';
 export const ERROR_VALUE = 'VALUE';
+export const ERROR_NEED_UPDATE = 'NEED_UPDATE';
+export const ERROR_NO_KERNEL = 'NO_KERNEL';
 
 const errors = {
   [ERROR]: '#ERROR!',
@@ -16,6 +18,8 @@ const errors = {
   [ERROR_NUM]: '#NUM!',
   [ERROR_REF]: '#REF!',
   [ERROR_VALUE]: '#VALUE!',
+  [ERROR_NEED_UPDATE]: '#NEED_UPDATE!',
+  [ERROR_NO_KERNEL]: '#NO_KERNEL!',
 };
 
 /**

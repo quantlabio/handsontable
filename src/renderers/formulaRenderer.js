@@ -40,63 +40,76 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
           col: col
         }),
         prevFormula = null,
-        formula = null,
+        formula = value.substr(1).toUpperCase(),
         needUpdate = false,
+        newValue = null,
+        currentItem = null,
         error, result;
 
-    if (!cellId) {
-      return;
-    }
-
-    // get cell data
+    // try formula matrix, see if it's already in it
     var item = instance.formula.matrix.getItem(cellId);
 
-    if (item) {
-
+    if (item) { // formula in matrix
       needUpdate = !! item.needUpdate;
+      prevFormula = item.formula;
+      error = item.error;
 
-      if (item.error) {
-        prevFormula = item.formula;
-        error = item.error;
-
-        if (needUpdate) {
-          error = null;
-        }
-      }
-    }
-
-    // check if typed formula or cell value should be recalculated
-    if ((value && value[0] === '=') || needUpdate) {
-
-      formula = value.substr(1).toUpperCase();
-
-      if (!error || formula !== prevFormula) {
-
-        var currentItem = item;
-
-        if (!currentItem) {
-
-          // define item to rulesJS matrix if not exists
-          item = {
-            id: cellId,
-            formula: formula
-          };
-
-          // add item to matrix
-          currentItem = instance.formula.matrix.addItem(item);
-        }
+      if (needUpdate) {
+        error = null;
+        currentItem = item;
 
         // parse formula
-        var newValue = instance.formula.parse(formula, {
+        newValue = instance.formula.parse(formula, {
           row: row,
           col: col,
           id: cellId
         });
 
-        // check if update needed
-        needUpdate = (newValue.error === '#NEED_UPDATE');
+      } else {
+        value = item.error || item.value;
+      }
 
-        // update item value and error
+    } else { // formula not in matrix yet
+
+      // parse formula
+      newValue = instance.formula.parse(formula, {
+        row: row,
+        col: col,
+        id: cellId
+      });
+
+      item = {
+        id: cellId,
+        formula: formula,
+        error: newValue.error,
+        value: newValue.result
+      };
+
+      // add item to matrix
+      currentItem = instance.formula.matrix.addItem(item);
+
+    }
+
+    if(newValue){
+      if(newValue.result != null && typeof newValue.result == 'object'){ // kernel async formula
+        newValue.result.onIOPub = function(msg){
+          if(msg.content){
+            if(msg.content.hasOwnProperty('data')){
+              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"')).join('');
+
+                instance.formula.matrix.updateItem(currentItem, {
+                  formula: formula,
+                  value: result,
+                  error: newValue.error,
+                  needUpdate: false
+                });
+                var escaped = stringify(result);
+                fastInnerText(TD, escaped);
+
+            }
+          }
+        }
+      }else{ // regular sync forumula
         instance.formula.matrix.updateItem(currentItem, {
           formula: formula,
           value: newValue.result,
@@ -107,10 +120,70 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
         error = newValue.error;
         result = newValue.result;
 
-        // update cell value in hot
         value = error || result;
       }
     }
+
+    /*
+    if ((value && value[0] === '=') || needUpdate) {
+      formula = value.substr(1).toUpperCase();
+
+      if (!error || formula !== prevFormula) {
+        var currentItem = item;
+
+        if (!currentItem) {
+          item = {
+            id: cellId,
+            formula: formula
+          };
+
+          currentItem = instance.formula.matrix.addItem(item);
+        }
+
+        var newValue = instance.formula.parse(formula, {
+          row: row,
+          col: col,
+          id: cellId
+        });
+
+        needUpdate = (newValue.error === '#NEED_UPDATE!');
+
+        if(newValue.result){
+          if(typeof newValue.result == 'object'){
+            newValue.result.onIOPub = function(msg){
+              if(msg.content){
+                if(msg.content.hasOwnProperty('data')){
+                  var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"')).join('');
+
+                    instance.formula.matrix.updateItem(currentItem, {
+                      formula: formula,
+                      value: result,
+                      error: newValue.error,
+                      needUpdate: needUpdate
+                    });
+                    var escaped = stringify(result);
+                    fastInnerText(TD, escaped);
+
+                }
+              }
+            }
+          }
+        }
+
+        instance.formula.matrix.updateItem(currentItem, {
+          formula: formula,
+          value: newValue.result,
+          error: newValue.error,
+          needUpdate: needUpdate
+        });
+
+        error = newValue.error;
+        result = newValue.result;
+
+        value = error || result;
+      }
+    }
+    */
 
     if (error) {
       // clear cell value

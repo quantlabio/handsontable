@@ -16,7 +16,7 @@ var ruleJS = (function (root) {
       value: '',
       error: '',
       deps: [],
-      formulaEdit: false
+      needUpdate: false
     };
     this.data = [];
     var formElements = ['input[type=text]', '[data-formula]'];
@@ -643,7 +643,7 @@ var ruleJS = (function (root) {
         case '/':
           result = number1 / number2;
           if (result == Infinity) {
-            throw Error('DIV_ZERO');
+            throw Error('DIV/0');
           } else if (isNaN(result)) {
             throw Error('VALUE');
           }
@@ -734,7 +734,7 @@ var ruleJS = (function (root) {
       }
 
       // cell is not available
-      throw Error('NOT_AVAILABLE');
+      throw Error('N/A');
     },
     cellRangeValue: function (start, end) {
       var fnCellValue = instance.custom.cellValue,
@@ -881,9 +881,9 @@ class Formula extends BasePlugin {
    afterChange(changes, source) {
      var instance = this.instance;
 
-     if (!instance.formulasEnabled) {
-       return;
-     }
+     //if (!instance.formulasEnabled) {
+     //   return;
+     //}
 
      if (source === 'edit' || source === 'undo' || source === 'autofill') {
 
@@ -902,7 +902,7 @@ class Formula extends BasePlugin {
          });
 
          // if changed value, all references cells should be recalculated
-         if (value[0] !== '=' || prevValue !== value) {
+         if (value[0] !== '=' || (prevValue != '' && prevValue !== value) ) {
            instance.formula.matrix.removeItem(cellId);
 
            // get referenced cells

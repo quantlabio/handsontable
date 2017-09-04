@@ -23,8 +23,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
- * Version: 0.33.4
- * Date: Fri Aug 11 2017 10:34:25 GMT+0800 (China Standard Time)
+ * Version: 0.33.5
+ * Date: Mon Sep 04 2017 16:53:18 GMT+0800 (China Standard Time)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -5961,8 +5961,10 @@ var ERROR_NULL = exports.ERROR_NULL = 'NULL';
 var ERROR_NUM = exports.ERROR_NUM = 'NUM';
 var ERROR_REF = exports.ERROR_REF = 'REF';
 var ERROR_VALUE = exports.ERROR_VALUE = 'VALUE';
+var ERROR_NEED_UPDATE = exports.ERROR_NEED_UPDATE = 'NEED_UPDATE';
+var ERROR_NO_KERNEL = exports.ERROR_NO_KERNEL = 'NO_KERNEL';
 
-var errors = (_errors = {}, _defineProperty(_errors, ERROR, '#ERROR!'), _defineProperty(_errors, ERROR_DIV_ZERO, '#DIV/0!'), _defineProperty(_errors, ERROR_NAME, '#NAME?'), _defineProperty(_errors, ERROR_NOT_AVAILABLE, '#N/A'), _defineProperty(_errors, ERROR_NULL, '#NULL!'), _defineProperty(_errors, ERROR_NUM, '#NUM!'), _defineProperty(_errors, ERROR_REF, '#REF!'), _defineProperty(_errors, ERROR_VALUE, '#VALUE!'), _errors);
+var errors = (_errors = {}, _defineProperty(_errors, ERROR, '#ERROR!'), _defineProperty(_errors, ERROR_DIV_ZERO, '#DIV/0!'), _defineProperty(_errors, ERROR_NAME, '#NAME?'), _defineProperty(_errors, ERROR_NOT_AVAILABLE, '#N/A'), _defineProperty(_errors, ERROR_NULL, '#NULL!'), _defineProperty(_errors, ERROR_NUM, '#NUM!'), _defineProperty(_errors, ERROR_REF, '#REF!'), _defineProperty(_errors, ERROR_VALUE, '#VALUE!'), _defineProperty(_errors, ERROR_NEED_UPDATE, '#NEED_UPDATE!'), _defineProperty(_errors, ERROR_NO_KERNEL, '#NO_KERNEL!'), _errors);
 
 /**
  * Return error type based on provided error id.
@@ -28403,7 +28405,7 @@ exports.default = SamplesGenerator;
 
 
 exports.__esModule = true;
-exports.rowLabelToIndex = exports.rowIndexToLabel = exports.columnLabelToIndex = exports.columnIndexToLabel = exports.toLabel = exports.extractLabel = exports.error = exports.Parser = exports.ERROR_VALUE = exports.ERROR_REF = exports.ERROR_NUM = exports.ERROR_NULL = exports.ERROR_NOT_AVAILABLE = exports.ERROR_NAME = exports.ERROR_DIV_ZERO = exports.ERROR = exports.SUPPORTED_FORMULAS = undefined;
+exports.rowLabelToIndex = exports.rowIndexToLabel = exports.columnLabelToIndex = exports.columnIndexToLabel = exports.toLabel = exports.extractLabel = exports.error = exports.Parser = exports.ERROR_NO_KERNEL = exports.ERROR_NEED_UPDATE = exports.ERROR_VALUE = exports.ERROR_REF = exports.ERROR_NUM = exports.ERROR_NULL = exports.ERROR_NOT_AVAILABLE = exports.ERROR_NAME = exports.ERROR_DIV_ZERO = exports.ERROR = exports.SUPPORTED_FORMULAS = undefined;
 
 var _parser = __webpack_require__(296);
 
@@ -28430,6 +28432,8 @@ exports.ERROR_NULL = _error.ERROR_NULL;
 exports.ERROR_NUM = _error.ERROR_NUM;
 exports.ERROR_REF = _error.ERROR_REF;
 exports.ERROR_VALUE = _error.ERROR_VALUE;
+exports.ERROR_NEED_UPDATE = _error.ERROR_NEED_UPDATE;
+exports.ERROR_NO_KERNEL = _error.ERROR_NO_KERNEL;
 exports.Parser = _parser2.default;
 exports.error = _error2.default;
 exports.extractLabel = _cell.extractLabel;
@@ -34798,7 +34802,7 @@ exports.OCT2HEX = function(number, places) {
 
 
 exports.__esModule = true;
-var SUPPORTED_FORMULAS = ['ABS', 'ACCRINT', 'ACOS', 'ACOSH', 'ACOT', 'ACOTH', 'ADD', 'AGGREGATE', 'AND', 'ARABIC', 'ARGS2ARRAY', 'ASIN', 'ASINH', 'ATAN', 'ATAN2', 'ATANH', 'AVEDEV', 'AVERAGE', 'AVERAGEA', 'AVERAGEIF', 'AVERAGEIFS', 'BASE', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'BETA.DIST', 'BETA.INV', 'BETADIST', 'BETAINV', 'BIN2DEC', 'BIN2HEX', 'BIN2OCT', 'BINOM.DIST', 'BINOM.DIST.RANGE', 'BINOM.INV', 'BINOMDIST', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'CEILING', 'CEILINGMATH', 'CEILINGPRECISE', 'CHAR', 'CHISQ.DIST', 'CHISQ.DIST.RT', 'CHISQ.INV', 'CHISQ.INV.RT', 'CHOOSE', 'CHOOSE', 'CLEAN', 'CODE', 'COLUMN', 'COLUMNS', 'COMBIN', 'COMBINA', 'COMPLEX', 'CONCATENATE', 'CONFIDENCE', 'CONFIDENCE.NORM', 'CONFIDENCE.T', 'CONVERT', 'CORREL', 'COS', 'COSH', 'COT', 'COTH', 'COUNT', 'COUNTA', 'COUNTBLANK', 'COUNTIF', 'COUNTIFS', 'COUNTIN', 'COUNTUNIQUE', 'COVARIANCE.P', 'COVARIANCE.S', 'CSC', 'CSCH', 'CUMIPMT', 'CUMPRINC', 'DATE', 'DATEVALUE', 'DAY', 'DAYS', 'DAYS360', 'DB', 'DDB', 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'DECIMAL', 'DEGREES', 'DELTA', 'DEVSQ', 'DIVIDE', 'DOLLAR', 'DOLLARDE', 'DOLLARFR', 'E', 'EDATE', 'EFFECT', 'EOMONTH', 'EQ', 'ERF', 'ERFC', 'EVEN', 'EXACT', 'EXP', 'EXPON.DIST', 'EXPONDIST', 'F.DIST', 'F.DIST.RT', 'F.INV', 'F.INV.RT', 'FACT', 'FACTDOUBLE', 'FALSE', 'FDIST', 'FDISTRT', 'FIND', 'FINV', 'FINVRT', 'FISHER', 'FISHERINV', 'FIXED', 'FLATTEN', 'FLOOR', 'FORECAST', 'FREQUENCY', 'FV', 'FVSCHEDULE', 'GAMMA', 'GAMMA.DIST', 'GAMMA.INV', 'GAMMADIST', 'GAMMAINV', 'GAMMALN', 'GAMMALN.PRECISE', 'GAUSS', 'GCD', 'GEOMEAN', 'GESTEP', 'GROWTH', 'GTE', 'HARMEAN', 'HEX2BIN', 'HEX2DEC', 'HEX2OCT', 'HOUR', 'HTML2TEXT', 'HYPGEOM.DIST', 'HYPGEOMDIST', 'IF', 'IMABS', 'IMAGINARY', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMDIV', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMPOWER', 'IMPRODUCT', 'IMREAL', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMSUB', 'IMSUM', 'IMTAN', 'INT', 'INTERCEPT', 'INTERVAL', 'IPMT', 'IRR', 'ISBINARY', 'ISBLANK', 'ISEVEN', 'ISLOGICAL', 'ISNONTEXT', 'ISNUMBER', 'ISODD', 'ISODD', 'ISOWEEKNUM', 'ISPMT', 'ISTEXT', 'JOIN', 'KURT', 'LARGE', 'LCM', 'LEFT', 'LEN', 'LINEST', 'LN', 'LOG', 'LOG10', 'LOGEST', 'LOGNORM.DIST', 'LOGNORM.INV', 'LOGNORMDIST', 'LOGNORMINV', 'LOWER', 'LT', 'LTE', 'MATCH', 'MAX', 'MAXA', 'MEDIAN', 'MID', 'MIN', 'MINA', 'MINUS', 'MINUTE', 'MIRR', 'MOD', 'MODE.MULT', 'MODE.SNGL', 'MODEMULT', 'MODESNGL', 'MONTH', 'MROUND', 'MULTINOMIAL', 'MULTIPLY', 'NE', 'NEGBINOM.DIST', 'NEGBINOMDIST', 'NETWORKDAYS', 'NOMINAL', 'NORM.DIST', 'NORM.INV', 'NORM.S.DIST', 'NORM.S.INV', 'NORMDIST', 'NORMINV', 'NORMSDIST', 'NORMSINV', 'NOT', 'NOW', 'NPER', 'NPV', 'NUMBERS', 'NUMERAL', 'OCT2BIN', 'OCT2DEC', 'OCT2HEX', 'ODD', 'OR', 'PDURATION', 'PEARSON', 'PERCENTILEEXC', 'PERCENTILEINC', 'PERCENTRANKEXC', 'PERCENTRANKINC', 'PERMUT', 'PERMUTATIONA', 'PHI', 'PI', 'PMT', 'POISSON.DIST', 'POISSONDIST', 'POW', 'POWER', 'PPMT', 'PROB', 'PRODUCT', 'PROPER', 'PV', 'QUARTILE.EXC', 'QUARTILE.INC', 'QUARTILEEXC', 'QUARTILEINC', 'QUOTIENT', 'RADIANS', 'RAND', 'RANDBETWEEN', 'RANK.AVG', 'RANK.EQ', 'RANKAVG', 'RANKEQ', 'RATE', 'REFERENCE', 'REGEXEXTRACT', 'REGEXMATCH', 'REGEXREPLACE', 'REPLACE', 'REPT', 'RIGHT', 'ROMAN', 'ROUND', 'ROUNDDOWN', 'ROUNDUP', 'ROW', 'ROWS', 'RRI', 'RSQ', 'SEARCH', 'SEC', 'SECH', 'SECOND', 'SERIESSUM', 'SIGN', 'SIN', 'SINH', 'SKEW', 'SKEW.P', 'SKEWP', 'SLN', 'SLOPE', 'SMALL', 'SPLIT', 'SPLIT', 'SQRT', 'SQRTPI', 'STANDARDIZE', 'STDEV.P', 'STDEV.S', 'STDEVA', 'STDEVP', 'STDEVPA', 'STDEVS', 'STEYX', 'SUBSTITUTE', 'SUBTOTAL', 'SUM', 'SUMIF', 'SUMIFS', 'SUMPRODUCT', 'SUMSQ', 'SUMX2MY2', 'SUMX2PY2', 'SUMXMY2', 'SWITCH', 'SYD', 'T', 'T.DIST', 'T.DIST.2T', 'T.DIST.RT', 'T.INV', 'T.INV.2T', 'TAN', 'TANH', 'TBILLEQ', 'TBILLPRICE', 'TBILLYIELD', 'TDIST', 'TDIST2T', 'TDISTRT', 'TEXT', 'TIME', 'TIMEVALUE', 'TINV', 'TINV2T', 'TODAY', 'TRANSPOSE', 'TREND', 'TRIM', 'TRIMMEAN', 'TRUE', 'TRUNC', 'UNICHAR', 'UNICODE', 'UNIQUE', 'UPPER', 'VALUE', 'VAR.P', 'VAR.S', 'VARA', 'VARP', 'VARPA', 'VARS', 'WEEKDAY', 'WEEKNUM', 'WEIBULL.DIST', 'WEIBULLDIST', 'WORKDAY', 'XIRR', 'XNPV', 'XOR', 'YEAR', 'YEARFRAC'];
+var SUPPORTED_FORMULAS = ['ABS', 'ACCRINT', 'ACOS', 'ACOSH', 'ACOT', 'ACOTH', 'ADD', 'AGGREGATE', 'AND', 'ARABIC', 'ARGS2ARRAY', 'ASIN', 'ASINH', 'ATAN', 'ATAN2', 'ATANH', 'AVEDEV', 'AVERAGE', 'AVERAGEA', 'AVERAGEIF', 'AVERAGEIFS', 'BASE', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'BETA.DIST', 'BETA.INV', 'BETADIST', 'BETAINV', 'BIN2DEC', 'BIN2HEX', 'BIN2OCT', 'BINOM.DIST', 'BINOM.DIST.RANGE', 'BINOM.INV', 'BINOMDIST', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'CEILING', 'CEILINGMATH', 'CEILINGPRECISE', 'CHAR', 'CHISQ.DIST', 'CHISQ.DIST.RT', 'CHISQ.INV', 'CHISQ.INV.RT', 'CHOOSE', 'CHOOSE', 'CLEAN', 'CODE', 'COLUMN', 'COLUMNS', 'COMBIN', 'COMBINA', 'COMPLEX', 'CONCATENATE', 'CONFIDENCE', 'CONFIDENCE.NORM', 'CONFIDENCE.T', 'CONVERT', 'CORREL', 'COS', 'COSH', 'COT', 'COTH', 'COUNT', 'COUNTA', 'COUNTBLANK', 'COUNTIF', 'COUNTIFS', 'COUNTIN', 'COUNTUNIQUE', 'COVARIANCE.P', 'COVARIANCE.S', 'CSC', 'CSCH', 'CUMIPMT', 'CUMPRINC', 'DATE', 'DATEVALUE', 'DAY', 'DAYS', 'DAYS360', 'DB', 'DDB', 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'DECIMAL', 'DEGREES', 'DELTA', 'DEVSQ', 'DIVIDE', 'DOLLAR', 'DOLLARDE', 'DOLLARFR', 'E', 'EDATE', 'EFFECT', 'EOMONTH', 'EQ', 'ERF', 'ERFC', 'EVEN', 'EXACT', 'EXP', 'EXPON.DIST', 'EXPONDIST', 'F.DIST', 'F.DIST.RT', 'F.INV', 'F.INV.RT', 'FACT', 'FACTDOUBLE', 'FALSE', 'FDIST', 'FDISTRT', 'FIND', 'FINV', 'FINVRT', 'FISHER', 'FISHERINV', 'FIXED', 'FLATTEN', 'FLOOR', 'FORECAST', 'FREQUENCY', 'FV', 'FVSCHEDULE', 'GAMMA', 'GAMMA.DIST', 'GAMMA.INV', 'GAMMADIST', 'GAMMAINV', 'GAMMALN', 'GAMMALN.PRECISE', 'GAUSS', 'GCD', 'GEOMEAN', 'GESTEP', 'GROWTH', 'GTE', 'HARMEAN', 'HEX2BIN', 'HEX2DEC', 'HEX2OCT', 'HOUR', 'HTML2TEXT', 'HYPGEOM.DIST', 'HYPGEOMDIST', 'IF', 'IMABS', 'IMAGINARY', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMDIV', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMPOWER', 'IMPRODUCT', 'IMREAL', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMSUB', 'IMSUM', 'IMTAN', 'INT', 'INTERCEPT', 'INTERVAL', 'IPMT', 'IRR', 'ISBINARY', 'ISBLANK', 'ISEVEN', 'ISLOGICAL', 'ISNONTEXT', 'ISNUMBER', 'ISODD', 'ISODD', 'ISOWEEKNUM', 'ISPMT', 'ISTEXT', 'JOIN', 'KURT', 'LARGE', 'LCM', 'LEFT', 'LEN', 'LINEST', 'LN', 'LOG', 'LOG10', 'LOGEST', 'LOGNORM.DIST', 'LOGNORM.INV', 'LOGNORMDIST', 'LOGNORMINV', 'LOWER', 'LT', 'LTE', 'MATCH', 'MAX', 'MAXA', 'MEDIAN', 'MID', 'MIN', 'MINA', 'MINUS', 'MINUTE', 'MIRR', 'MOD', 'MODE.MULT', 'MODE.SNGL', 'MODEMULT', 'MODESNGL', 'MONTH', 'MROUND', 'MULTINOMIAL', 'MULTIPLY', 'NE', 'NEGBINOM.DIST', 'NEGBINOMDIST', 'NETWORKDAYS', 'NOMINAL', 'NORM.DIST', 'NORM.INV', 'NORM.S.DIST', 'NORM.S.INV', 'NORMDIST', 'NORMINV', 'NORMSDIST', 'NORMSINV', 'NOT', 'NOW', 'NPER', 'NPV', 'NUMBERS', 'NUMERAL', 'OCT2BIN', 'OCT2DEC', 'OCT2HEX', 'ODD', 'OR', 'PDURATION', 'PEARSON', 'PERCENTILEEXC', 'PERCENTILEINC', 'PERCENTRANKEXC', 'PERCENTRANKINC', 'PERMUT', 'PERMUTATIONA', 'PHI', 'PI', 'PMT', 'POISSON.DIST', 'POISSONDIST', 'POW', 'POWER', 'PPMT', 'PROB', 'PRODUCT', 'PROPER', 'PV', 'QUARTILE.EXC', 'QUARTILE.INC', 'QUARTILEEXC', 'QUARTILEINC', 'QUOTIENT', 'RADIANS', 'RAND', 'RANDBETWEEN', 'RANK.AVG', 'RANK.EQ', 'RANKAVG', 'RANKEQ', 'RATE', 'REFERENCE', 'REGEXEXTRACT', 'REGEXMATCH', 'REGEXREPLACE', 'REPLACE', 'REPT', 'RIGHT', 'ROMAN', 'ROUND', 'ROUNDDOWN', 'ROUNDUP', 'ROW', 'ROWS', 'RRI', 'RSQ', 'SEARCH', 'SEC', 'SECH', 'SECOND', 'SERIESSUM', 'SIGN', 'SIN', 'SINH', 'SKEW', 'SKEW.P', 'SKEWP', 'SLN', 'SLOPE', 'SMALL', 'SPLIT', 'SPLIT', 'SQRT', 'SQRTPI', 'STANDARDIZE', 'STDEV.P', 'STDEV.S', 'STDEVA', 'STDEVP', 'STDEVPA', 'STDEVS', 'STEYX', 'SUBSTITUTE', 'SUBTOTAL', 'SUM', 'SUMIF', 'SUMIFS', 'SUMPRODUCT', 'SUMSQ', 'SUMX2MY2', 'SUMX2PY2', 'SUMXMY2', 'SWITCH', 'SYD', 'T', 'T.DIST', 'T.DIST.2T', 'T.DIST.RT', 'T.INV', 'T.INV.2T', 'TAN', 'TANH', 'TBILLEQ', 'TBILLPRICE', 'TBILLYIELD', 'TDIST', 'TDIST2T', 'TDISTRT', 'TEXT', 'TIME', 'TIMEVALUE', 'TINV', 'TINV2T', 'TODAY', 'TRANSPOSE', 'TREND', 'TRIM', 'TRIMMEAN', 'TRUE', 'TRUNC', 'UNICHAR', 'UNICODE', 'UNIQUE', 'UPPER', 'VALUE', 'VAR.P', 'VAR.S', 'VARA', 'VARP', 'VARPA', 'VARS', 'WEEKDAY', 'WEEKNUM', 'WEIBULL.DIST', 'WEIBULLDIST', 'WORKDAY', 'XIRR', 'XNPV', 'XOR', 'YEAR', 'YEARFRAC', 'VLOOKUP', 'HLOOKUP'];
 
 exports.default = SUPPORTED_FORMULAS;
 
@@ -36383,9 +36387,9 @@ Handsontable.DefaultSettings = _defaultSettings2.default;
 Handsontable.EventManager = _eventManager2.default;
 Handsontable._getListenersCounter = _eventManager.getListenersCounter; // For MemoryLeak tests
 
-Handsontable.buildDate = "2017-08-11T02:34:25.230Z";
+Handsontable.buildDate = "2017-09-04T08:53:18.435Z";
 Handsontable.packageName = "@quantlab/handsontable";
-Handsontable.version = "0.33.4";
+Handsontable.version = "0.33.5";
 
 var baseVersion = undefined;
 
@@ -40017,6 +40021,8 @@ exports.default = checkboxRenderer;
 
 exports.__esModule = true;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _element = __webpack_require__(0);
 
 var _mixed = __webpack_require__(20);
@@ -40057,64 +40063,77 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
       col: col
     }),
         prevFormula = null,
-        formula = null,
+        formula = value.substr(1).toUpperCase(),
         needUpdate = false,
+        newValue = null,
+        currentItem = null,
         error,
         result;
 
-    if (!cellId) {
-      return;
-    }
-
-    // get cell data
+    // try formula matrix, see if it's already in it
     var item = instance.formula.matrix.getItem(cellId);
 
     if (item) {
-
+      // formula in matrix
       needUpdate = !!item.needUpdate;
+      prevFormula = item.formula;
+      error = item.error;
 
-      if (item.error) {
-        prevFormula = item.formula;
-        error = item.error;
-
-        if (needUpdate) {
-          error = null;
-        }
-      }
-    }
-
-    // check if typed formula or cell value should be recalculated
-    if (value && value[0] === '=' || needUpdate) {
-
-      formula = value.substr(1).toUpperCase();
-
-      if (!error || formula !== prevFormula) {
-
-        var currentItem = item;
-
-        if (!currentItem) {
-
-          // define item to rulesJS matrix if not exists
-          item = {
-            id: cellId,
-            formula: formula
-          };
-
-          // add item to matrix
-          currentItem = instance.formula.matrix.addItem(item);
-        }
+      if (needUpdate) {
+        error = null;
+        currentItem = item;
 
         // parse formula
-        var newValue = instance.formula.parse(formula, {
+        newValue = instance.formula.parse(formula, {
           row: row,
           col: col,
           id: cellId
         });
+      } else {
+        value = item.error || item.value;
+      }
+    } else {
+      // formula not in matrix yet
 
-        // check if update needed
-        needUpdate = newValue.error === '#NEED_UPDATE';
+      // parse formula
+      newValue = instance.formula.parse(formula, {
+        row: row,
+        col: col,
+        id: cellId
+      });
 
-        // update item value and error
+      item = {
+        id: cellId,
+        formula: formula,
+        error: newValue.error,
+        value: newValue.result
+      };
+
+      // add item to matrix
+      currentItem = instance.formula.matrix.addItem(item);
+    }
+
+    if (newValue) {
+      if (newValue.result != null && _typeof(newValue.result) == 'object') {
+        // kernel async formula
+        newValue.result.onIOPub = function (msg) {
+          if (msg.content) {
+            if (msg.content.hasOwnProperty('data')) {
+              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g, '"')).join('');
+
+              instance.formula.matrix.updateItem(currentItem, {
+                formula: formula,
+                value: result,
+                error: newValue.error,
+                needUpdate: false
+              });
+              var escaped = (0, _mixed.stringify)(result);
+              (0, _element.fastInnerText)(TD, escaped);
+            }
+          }
+        };
+      } else {
+        // regular sync forumula
         instance.formula.matrix.updateItem(currentItem, {
           formula: formula,
           value: newValue.result,
@@ -40125,10 +40144,59 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
         error = newValue.error;
         result = newValue.result;
 
-        // update cell value in hot
         value = error || result;
       }
     }
+
+    /*
+    if ((value && value[0] === '=') || needUpdate) {
+      formula = value.substr(1).toUpperCase();
+        if (!error || formula !== prevFormula) {
+        var currentItem = item;
+          if (!currentItem) {
+          item = {
+            id: cellId,
+            formula: formula
+          };
+            currentItem = instance.formula.matrix.addItem(item);
+        }
+          var newValue = instance.formula.parse(formula, {
+          row: row,
+          col: col,
+          id: cellId
+        });
+          needUpdate = (newValue.error === '#NEED_UPDATE!');
+          if(newValue.result){
+          if(typeof newValue.result == 'object'){
+            newValue.result.onIOPub = function(msg){
+              if(msg.content){
+                if(msg.content.hasOwnProperty('data')){
+                  var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"')).join('');
+                      instance.formula.matrix.updateItem(currentItem, {
+                      formula: formula,
+                      value: result,
+                      error: newValue.error,
+                      needUpdate: needUpdate
+                    });
+                    var escaped = stringify(result);
+                    fastInnerText(TD, escaped);
+                  }
+              }
+            }
+          }
+        }
+          instance.formula.matrix.updateItem(currentItem, {
+          formula: formula,
+          value: newValue.result,
+          error: newValue.error,
+          needUpdate: needUpdate
+        });
+          error = newValue.error;
+        result = newValue.result;
+          value = error || result;
+      }
+    }
+    */
 
     if (error) {
       // clear cell value
@@ -52430,7 +52498,7 @@ var ruleJS = function ruleJS(root) {
       value: '',
       error: '',
       deps: [],
-      formulaEdit: false
+      needUpdate: false
     };
     this.data = [];
     var formElements = ['input[type=text]', '[data-formula]'];
@@ -53059,7 +53127,7 @@ var ruleJS = function ruleJS(root) {
         case '/':
           result = number1 / number2;
           if (result == Infinity) {
-            throw Error('DIV_ZERO');
+            throw Error('DIV/0');
           } else if (isNaN(result)) {
             throw Error('VALUE');
           }
@@ -53149,7 +53217,7 @@ var ruleJS = function ruleJS(root) {
       }
 
       // cell is not available
-      throw Error('NOT_AVAILABLE');
+      throw Error('N/A');
     },
     cellRangeValue: function cellRangeValue(start, end) {
       var fnCellValue = instance.custom.cellValue,
@@ -53302,9 +53370,9 @@ var Formula = function (_BasePlugin) {
     value: function afterChange(changes, source) {
       var instance = this.instance;
 
-      if (!instance.formulasEnabled) {
-        return;
-      }
+      //if (!instance.formulasEnabled) {
+      //   return;
+      //}
 
       if (source === 'edit' || source === 'undo' || source === 'autofill') {
 
@@ -53323,7 +53391,7 @@ var Formula = function (_BasePlugin) {
           });
 
           // if changed value, all references cells should be recalculated
-          if (value[0] !== '=' || prevValue !== value) {
+          if (value[0] !== '=' || prevValue != '' && prevValue !== value) {
             instance.formula.matrix.removeItem(cellId);
 
             // get referenced cells

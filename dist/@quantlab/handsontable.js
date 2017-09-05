@@ -23,8 +23,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
- * Version: 0.33.5
- * Date: Mon Sep 04 2017 16:53:18 GMT+0800 (China Standard Time)
+ * Version: 0.33.6
+ * Date: Tue Sep 05 2017 12:04:11 GMT+0800 (China Standard Time)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -36387,9 +36387,9 @@ Handsontable.DefaultSettings = _defaultSettings2.default;
 Handsontable.EventManager = _eventManager2.default;
 Handsontable._getListenersCounter = _eventManager.getListenersCounter; // For MemoryLeak tests
 
-Handsontable.buildDate = "2017-09-04T08:53:18.435Z";
+Handsontable.buildDate = "2017-09-05T04:04:11.911Z";
 Handsontable.packageName = "@quantlab/handsontable";
-Handsontable.version = "0.33.5";
+Handsontable.version = "0.33.6";
 
 var baseVersion = undefined;
 
@@ -40119,16 +40119,59 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
         newValue.result.onIOPub = function (msg) {
           if (msg.content) {
             if (msg.content.hasOwnProperty('data')) {
-              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g, '"')).join('');
+              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g, '"'));
 
+              // only set left upper corner of matrix
+              var leftUp = result[1];
+              if (Array.isArray(result[1])) {
+                leftUp = result[1][0];
+                if (Array.isArray(result[1][0])) {
+                  leftUp = result[1][0][0];
+                }
+              }
               instance.formula.matrix.updateItem(currentItem, {
                 formula: formula,
-                value: result,
+                value: leftUp,
                 error: newValue.error,
                 needUpdate: false
               });
-              var escaped = (0, _mixed.stringify)(result);
-              (0, _element.fastInnerText)(TD, escaped);
+
+              // for now only kernel async formulas might return matrix
+              if (Array.isArray(result[1])) {
+
+                var body = TD.parentNode.parentNode;
+                var ri = TD.parentNode.rowIndex;
+                var ci = TD.cellIndex;
+                var i = 0;
+                var j = 0;
+                var escaped;
+
+                result[1].forEach(function (rr) {
+
+                  if (Array.isArray(rr)) {
+                    // matrix
+
+                    rr.forEach(function (rc) {
+                      escaped = (0, _mixed.stringify)(rc);
+                      (0, _element.fastInnerText)(body.rows[ri - 1].cells[ci], escaped);
+                      if (i > 0 || j > 0) instance.setDataAtCell(row + i, col + j, escaped);
+                      ci++;
+                      j++;
+                    });
+                  } else {
+                    // vector
+                    escaped = (0, _mixed.stringify)(rr);
+                    (0, _element.fastInnerText)(body.rows[ri - 1].cells[ci], escaped);
+                    if (i > 0 || j > 0) instance.setDataAtCell(row + i, col + j, escaped);
+                  }
+                  ri++;
+                  i++;
+                });
+              } else {
+                // scalar
+                var escaped = (0, _mixed.stringify)(result.join(''));
+                (0, _element.fastInnerText)(TD, escaped);
+              }
             }
           }
         };

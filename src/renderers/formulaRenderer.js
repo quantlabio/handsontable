@@ -95,17 +95,59 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
         newValue.result.onIOPub = function(msg){
           if(msg.content){
             if(msg.content.hasOwnProperty('data')){
-              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"')).join('');
+              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"'));
 
+                // only set left upper corner of matrix
+                var leftUp = result[1];
+                if(Array.isArray(result[1])){
+                  leftUp = result[1][0];
+                  if(Array.isArray(result[1][0])){
+                    leftUp = result[1][0][0];
+                  }
+                }
                 instance.formula.matrix.updateItem(currentItem, {
                   formula: formula,
-                  value: result,
+                  value: leftUp,
                   error: newValue.error,
                   needUpdate: false
                 });
-                var escaped = stringify(result);
-                fastInnerText(TD, escaped);
 
+                // for now only kernel async formulas might return matrix
+                if(Array.isArray(result[1])){
+
+                  var body = TD.parentNode.parentNode;
+                  var ri = TD.parentNode.rowIndex;
+                  var ci = TD.cellIndex;
+                  var i = 0;
+                  var j = 0;
+                  var escaped;
+
+                  result[1].forEach( rr => {
+
+                    if(Array.isArray(rr)){ // matrix
+
+                      rr.forEach( rc => {
+                        escaped = stringify(rc);
+                        fastInnerText(body.rows[ri - 1].cells[ci], escaped);
+                        if(i>0||j>0)
+                          instance.setDataAtCell(row+i, col+j, escaped);
+                        ci++;
+                        j++;
+                      });
+                    } else { // vector
+                      escaped = stringify(rr);
+                      fastInnerText(body.rows[ri - 1].cells[ci], escaped);
+                      if(i>0||j>0)
+                        instance.setDataAtCell(row+i, col+j, escaped);
+                    }
+                    ri++;
+                    i++;
+                  });
+
+                } else {  // scalar
+                  var escaped = stringify(result.join(''));
+                  fastInnerText(TD, escaped);
+                }
             }
           }
         }

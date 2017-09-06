@@ -109,11 +109,6 @@ var hot = new Handsontable(container, {
 
 Have questions regarding the Pro version? [Contact us](https://handsontable.com/contact.html?category=general_question) or take a look at the [Frequently Asked Questions](https://handsontable.com/faq.html).
 
-## Screenshot
-<p align="center">
-<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-showcase.png" align="center" alt="Handsontable Screenshot"/>
-</p>
-
 ## Community
 - [Forum](https://forum.handsontable.com)
 - [Google group](https://groups.google.com/forum/#!forum/handsontable)

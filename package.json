@@ -4,13 +4,13 @@
   "homepage": "http://handsontable.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/handsontable/handsontable.git"
+    "url": "https://github.com/quantlibio/handsontable.git"
   },
   "bugs": {
-    "url": "https://github.com/handsontable/handsontable/issues"
+    "url": "https://github.com/quantlibio/handsontable/issues"
   },
   "author": "Handsoncode <hello@handsontable.com>",
-  "version": "0.33.6",
+  "version": "0.33.7",
   "browser": "dist/@quantlab/handsontable.full.js",
   "main": "commonjs/index.js",
   "module": "es/index.js",
@@ -61,7 +61,7 @@
     "moment": "2.18.1",
     "numbro": "1.11.0",
     "pikaday": "1.5.1",
-    "formulajs": "github:handsontable/formula.js#1.2.1",
+    "@quantlab/formulajs": "^1.0.9",
     "tiny-emitter": "^2.0.1"
   },
   "devDependencies": {

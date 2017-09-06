@@ -92,126 +92,89 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
 
     if(newValue){
       if(newValue.result != null && typeof newValue.result == 'object'){ // kernel async formula
-        newValue.result.onIOPub = function(msg){
-          if(msg.content){
-            if(msg.content.hasOwnProperty('data')){
-              var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"'));
+        if(typeof newValue.result.onIOPub == 'object'){
+          // kernel formula
+          newValue.result.onIOPub = function(msg){
+            if(msg.content){
+              if(msg.content.hasOwnProperty('data')){
+                var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"'));
 
-                // only set left upper corner of matrix
-                var leftUp = result[1];
-                if(Array.isArray(result[1])){
-                  leftUp = result[1][0];
-                  if(Array.isArray(result[1][0])){
-                    leftUp = result[1][0][0];
-                  }
-                }
-                instance.formula.matrix.updateItem(currentItem, {
-                  formula: formula,
-                  value: leftUp,
-                  error: newValue.error,
-                  needUpdate: false
-                });
-
-                // for now only kernel async formulas might return matrix
-                if(Array.isArray(result[1])){
-
-                  var body = TD.parentNode.parentNode;
-                  var ri = TD.parentNode.rowIndex;
-                  var ci = TD.cellIndex;
-                  var i = 0;
-                  var j = 0;
-                  var escaped;
-
-                  result[1].forEach( rr => {
-
-                    if(Array.isArray(rr)){ // matrix
-
-                      rr.forEach( rc => {
-                        escaped = stringify(rc);
-                        fastInnerText(body.rows[ri - 1].cells[ci], escaped);
-                        if(i>0||j>0)
-                          instance.setDataAtCell(row+i, col+j, escaped);
-                        ci++;
-                        j++;
-                      });
-                    } else { // vector
-                      escaped = stringify(rr);
-                      fastInnerText(body.rows[ri - 1].cells[ci], escaped);
-                      if(i>0||j>0)
-                        instance.setDataAtCell(row+i, col+j, escaped);
+                  // only set left upper corner of matrix
+                  var leftUp = result[1];
+                  if(Array.isArray(leftUp)){
+                    leftUp = leftUp[0];
+                    if(Array.isArray(leftUp)){
+                      leftUp = leftUp[0];
                     }
-                    ri++;
-                    i++;
+                  }
+
+                  instance.formula.matrix.updateItem(currentItem, {
+                    formula: formula,
+                    value: leftUp,
+                    error: newValue.error,
+                    needUpdate: false
                   });
 
-                } else {  // scalar
-                  var escaped = stringify(result.join(''));
-                  fastInnerText(TD, escaped);
-                }
-            }
-          }
-        }
-      }else{ // regular sync forumula
-        instance.formula.matrix.updateItem(currentItem, {
-          formula: formula,
-          value: newValue.result,
-          error: newValue.error,
-          needUpdate: needUpdate
-        });
+                  // for now only kernel async formulas might return matrix
+                  if(Array.isArray(result[1])){
 
-        error = newValue.error;
-        result = newValue.result;
+                    var matrix;
 
-        value = error || result;
-      }
-    }
+                    if(Array.isArray(newValue.result[1][0])){
+                      matrix = newValue.result[1];
+                    }
+                    else{
+                      matrix = [newValue.result[1]];
+                    }
 
-    /*
-    if ((value && value[0] === '=') || needUpdate) {
-      formula = value.substr(1).toUpperCase();
+                    matrix[0][0] = value;
 
-      if (!error || formula !== prevFormula) {
-        var currentItem = item;
+                    instance.populateFromArray(row,col,matrix);
 
-        if (!currentItem) {
-          item = {
-            id: cellId,
-            formula: formula
-          };
+                    //value = newValue.error || leftUp;
 
-          currentItem = instance.formula.matrix.addItem(item);
-        }
-
-        var newValue = instance.formula.parse(formula, {
-          row: row,
-          col: col,
-          id: cellId
-        });
-
-        needUpdate = (newValue.error === '#NEED_UPDATE!');
-
-        if(newValue.result){
-          if(typeof newValue.result == 'object'){
-            newValue.result.onIOPub = function(msg){
-              if(msg.content){
-                if(msg.content.hasOwnProperty('data')){
-                  var result = JSON.parse(msg.content.data['text/plain'].replace(/\'/g,'"')).join('');
-
-                    instance.formula.matrix.updateItem(currentItem, {
-                      formula: formula,
-                      value: result,
-                      error: newValue.error,
-                      needUpdate: needUpdate
-                    });
-                    var escaped = stringify(result);
+                  } else {  // scalar
+                    var escaped = stringify(result.join(''));
                     fastInnerText(TD, escaped);
-
-                }
+                  }
               }
             }
           }
-        }
+        }else{ // regular sync matrix formulas
 
+          // only set left upper corner of matrix
+          var leftUp = newValue.result;
+          if(Array.isArray(leftUp)){
+            leftUp = leftUp[0];
+            if(Array.isArray(leftUp)){
+              leftUp = leftUp[0];
+            }
+          }
+
+          instance.formula.matrix.updateItem(currentItem, {
+            formula: formula,
+            value: leftUp,
+            error: newValue.error,
+            needUpdate: false
+          });
+
+          var matrix;
+
+          if(Array.isArray(newValue.result[0])){
+            matrix = newValue.result;
+          }
+          else{
+            matrix = [newValue.result];
+          }
+
+          matrix[0][0] = value;
+
+          instance.populateFromArray(row,col,matrix);
+
+          value = newValue.error || leftUp;
+
+        }
+      }else{ // regular sync scalar forumula
         instance.formula.matrix.updateItem(currentItem, {
           formula: formula,
           value: newValue.result,
@@ -225,7 +188,7 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
         value = error || result;
       }
     }
-    */
+
 
     if (error) {
       // clear cell value

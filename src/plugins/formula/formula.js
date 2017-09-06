@@ -73,10 +73,10 @@ var ruleJS = (function (root) {
                 }
               });
             } else {
-
-              if (item[p].indexOf(props[p]) === -1) {
-                item[p].push(props[p]);
-              }
+              item[p] = props[p];
+              //if (item[p].indexOf(props[p]) === -1) {
+              //  item[p].push(props[p]);
+              //}
             }
           } else {
             item[p] = props[p];

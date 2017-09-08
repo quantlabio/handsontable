@@ -15,11 +15,12 @@
       [2010, 5, 2905, 2867, '=SUM(A4,2,3)', '=$B1'],
       [2011, 4, 2517, 4822, 552, 6127],
       [2012, '=SUM(A2:A5)', '=SUM(B5,E3)', '=A2/B2', 12, 4151],
+      [null, null, null, null, null],
+      ['=transpose(a2:b3)', null, null, null, null],
     ];
     var container = document.getElementById('xls');
     var hot = new Handsontable(container, {
       data: data,
-      honeycombPlugin: true,
       rowHeaders: true,
       colHeaders: true,
       manualColumnResize: true,
@@ -28,8 +29,14 @@
       minCols: 32,
       colWidths: 100,
       contextMenu: true,
-      formulas: true,
       outsideClickDeselects: false
+    });
+    Handsontable.hooks.add('afterChange', function(changes, source) {
+      if (source === 'edit' || source === 'undo' || source === 'autofill'){
+        changes.forEach(function(item) {
+          console.log('oldVal:'+item[2]+',newVal:'+item[3]);
+        });
+      }
     });
   </script>
 </body>

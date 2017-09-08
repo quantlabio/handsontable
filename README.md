@@ -1,5 +1,3 @@
-# [![Build Status](https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/Handsontable-logo-300-74.png)](https://handsontable.com)
-
 [**Handsontable**](https://handsontable.com) is a pure JavaScript/HTML5 spreadsheet component with an Excel-like appearance. It can easily integrate with any data source and comes with a variety of useful features like data binding, validation, sorting or powerful custom context menu. Actively supported by the [Handsoncode team](https://handsontable.com/team.html) team and [many contributors](https://github.com/handsontable/handsontable/graphs/contributors).
 
 [![Build status](https://travis-ci.org/quantlabio/handsontable.svg?branch=master)](https://travis-ci.org/quantlabio/handsontable)
@@ -88,32 +86,6 @@ var hot = new Handsontable(container, {
 - [Performance tips](http://docs.handsontable.com/tutorial-performance-tips.html)
 - [Roadmap](https://trello.com/b/PztR4hpj/handsontable-roadmap-2016)
 - [Known limitations](http://docs.handsontable.com/tutorial-known-limitations.html)
-
-## Commercial version
-[Handsontable Pro](https://handsontable.com/pricing.html) is a commercial spreadsheet solution packed with additional, business-ready features. It comes with a dedicated support and a [forum support](https://forum.handsontable.com), where you can find the answers to common questions.
-
-| Pro Feature                 | Description                                                                            	|
-|---------------------------	|----------------------------------------------------------------------------------------	|
-| Binding rows with headers 	| Bind rows with headers to lock the row number and always display one beside the other. 	|
-| Collapsing columns        	| Expand and collapse columns to better fit the content.                                 	|
-| Column summary            	| Carry out pre-defined calculations and display the results in Handsontable.                 	|
-| Dropdown menu             	| Add a menu to the heading to enable additional operations for the columns.             	|
-| Export to file            	| Export data to a flat file like CSV or a string.                                       	|
-| Filtering                 	| Display rows that meet your criteria and hide the rest.                                	|
-| Gantt Chart               	| Create a simple Gantt Chart using Handsontable.                                        	|
-| Header tooltips           	| Display the header label in a tooltip.                                                 	|
-| Hiding columns            	| Hide specific columns and show the rest.                                               	|
-| Hiding rows               	| Hide specific rows and show the rest.                                                  	|
-| Nested headers            	| Create a nested, hierarchical structure of headers to get your data into groups.       	|
-| Trimming rows             	| Exclude specific rows from the rendering process so they won't be displayed.           	|
-
-Have questions regarding the Pro version? [Contact us](https://handsontable.com/contact.html?category=general_question) or take a look at the [Frequently Asked Questions](https://handsontable.com/faq.html).
-
-## Community
-- [Forum](https://forum.handsontable.com)
-- [Google group](https://groups.google.com/forum/#!forum/handsontable)
-- [GitHub](https://github.com/handsontable/handsontable/issues)
-- [Twitter](https://twitter.com/handsontable)
 
 ## Contributing
 If you would like to help us in writing the code, please take a look into [CONTRIBUTING.md](https://github.com/handsontable/handsontable/blob/master/CONTRIBUTING.md)

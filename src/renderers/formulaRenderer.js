@@ -23,6 +23,8 @@ function isFormula(value) {
  * @param cellProperties
  */
 function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
+  getRenderer('base').apply(this, arguments);
+
   //set cellProperties
   if(cellProperties.fontWeight != null)
     TD.style.fontWeight = cellProperties.fontWeight;
@@ -120,11 +122,11 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
 
                     var matrix;
 
-                    if(Array.isArray(newValue.result[1][0])){
-                      matrix = newValue.result[1];
+                    if(Array.isArray(result[1][0])){
+                      matrix = result[1];
                     }
                     else{
-                      matrix = [newValue.result[1]];
+                      matrix = [result[1]];
                     }
 
                     matrix[0][0] = value;
@@ -213,7 +215,6 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
   var escaped = stringify(value);
   fastInnerText(TD, escaped);
 
-  getRenderer('base').apply(this, arguments);
 }
 
 export default formulaRenderer;

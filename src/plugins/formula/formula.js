@@ -903,17 +903,20 @@ class Formula extends BasePlugin {
 
          // if changed value, all references cells should be recalculated
          if (value[0] !== '=' || (prevValue != '' && prevValue !== value) ) {
+           //formula changed, need to remove from matrix
            instance.formula.matrix.removeItem(cellId);
 
-           // get referenced cells
-           var deps = instance.formula.matrix.getDependencies(cellId);
+           //data changed, depend formulas need to recalculation
+           if((prevValue+'') !== (value+'')){ //TODO: this looks like bug, old/new value could be numeric and text 
+             // get referenced cells
+             var deps = instance.formula.matrix.getDependencies(cellId);
 
-           // update cells
-           deps.forEach(function(itemId) {
-             instance.formula.matrix.updateItem(itemId, {
-               needUpdate: true
+             deps.forEach(function(itemId) {
+               instance.formula.matrix.updateItem(itemId, {
+                 needUpdate: true
+               });
              });
-           });
+           }
 
            rerender = true;
          }

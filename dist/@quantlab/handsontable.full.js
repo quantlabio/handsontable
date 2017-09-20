@@ -23,8 +23,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
- * Version: 0.33.8
- * Date: Fri Sep 08 2017 13:57:44 GMT+0800 (China Standard Time)
+ * Version: 0.33.9
+ * Date: Wed Sep 20 2017 14:36:39 GMT+0800 (China Standard Time)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -9367,7 +9367,7 @@ var _pluginHooks = __webpack_require__(9);
 
 var _pluginHooks2 = _interopRequireDefault(_pluginHooks);
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 var _baseEditor2 = _interopRequireDefault(_baseEditor);
 
@@ -10540,7 +10540,7 @@ __webpack_require__(49).inspectSource = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP         = __webpack_require__(19)
-  , createDesc = __webpack_require__(42);
+  , createDesc = __webpack_require__(43);
 module.exports = __webpack_require__(23) ? function(object, key, value){
   return dP.f(object, key, createDesc(1, value));
 } : function(object, key, value){
@@ -11476,330 +11476,6 @@ function curryRight(func) {
 
 /***/ }),
 /* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys       = __webpack_require__(100)
-  , enumBugKeys = __webpack_require__(75);
-
-module.exports = Object.keys || function keys(O){
-  return $keys(O, enumBugKeys);
-};
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function(it){
-  return toString.call(it).slice(8, -1);
-};
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports) {
-
-module.exports = function(bitmap, value){
-  return {
-    enumerable  : !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable    : !(bitmap & 4),
-    value       : value
-  };
-};
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(32);
-module.exports = function(it){
-  return Object(defined(it));
-};
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 22.1.3.31 Array.prototype[@@unscopables]
-var UNSCOPABLES = __webpack_require__(11)('unscopables')
-  , ArrayProto  = Array.prototype;
-if(ArrayProto[UNSCOPABLES] == undefined)__webpack_require__(34)(ArrayProto, UNSCOPABLES, {});
-module.exports = function(key){
-  ArrayProto[UNSCOPABLES][key] = true;
-};
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.EditorState = undefined;
-
-var _src = __webpack_require__(14);
-
-var _mixed = __webpack_require__(21);
-
-var EditorState = exports.EditorState = {
-  VIRGIN: 'STATE_VIRGIN', // before editing
-  EDITING: 'STATE_EDITING',
-  WAITING: 'STATE_WAITING', // waiting for async validation
-  FINISHED: 'STATE_FINISHED'
-};
-
-function BaseEditor(instance) {
-  this.instance = instance;
-  this.state = EditorState.VIRGIN;
-
-  this._opened = false;
-  this._fullEditMode = false;
-  this._closeCallback = null;
-
-  this.init();
-}
-
-BaseEditor.prototype._fireCallbacks = function (result) {
-  if (this._closeCallback) {
-    this._closeCallback(result);
-    this._closeCallback = null;
-  }
-};
-
-BaseEditor.prototype.init = function () {};
-
-BaseEditor.prototype.getValue = function () {
-  throw Error('Editor getValue() method unimplemented');
-};
-
-BaseEditor.prototype.setValue = function (newValue) {
-  throw Error('Editor setValue() method unimplemented');
-};
-
-BaseEditor.prototype.open = function () {
-  throw Error('Editor open() method unimplemented');
-};
-
-BaseEditor.prototype.close = function () {
-  throw Error('Editor close() method unimplemented');
-};
-
-BaseEditor.prototype.prepare = function (row, col, prop, td, originalValue, cellProperties) {
-  this.TD = td;
-  this.row = row;
-  this.col = col;
-  this.prop = prop;
-  this.originalValue = originalValue;
-  this.cellProperties = cellProperties;
-  this.state = EditorState.VIRGIN;
-};
-
-BaseEditor.prototype.extend = function () {
-  var baseClass = this.constructor;
-
-  function Editor() {
-    baseClass.apply(this, arguments);
-  }
-
-  function inherit(Child, Parent) {
-    function Bridge() {}
-    Bridge.prototype = Parent.prototype;
-    Child.prototype = new Bridge();
-    Child.prototype.constructor = Child;
-
-    return Child;
-  }
-
-  return inherit(Editor, baseClass);
-};
-
-BaseEditor.prototype.saveValue = function (value, ctrlDown) {
-  var selection = void 0;
-  var tmp = void 0;
-
-  // if ctrl+enter and multiple cells selected, behave like Excel (finish editing and apply to all cells)
-  if (ctrlDown) {
-    selection = this.instance.getSelected();
-
-    if (selection[0] > selection[2]) {
-      tmp = selection[0];
-      selection[0] = selection[2];
-      selection[2] = tmp;
-    }
-    if (selection[1] > selection[3]) {
-      tmp = selection[1];
-      selection[1] = selection[3];
-      selection[3] = tmp;
-    }
-  } else {
-    selection = [this.row, this.col, null, null];
-  }
-
-  this.instance.populateFromArray(selection[0], selection[1], value, selection[2], selection[3], 'edit');
-};
-
-BaseEditor.prototype.beginEditing = function (initialValue, event) {
-  if (this.state != EditorState.VIRGIN) {
-    return;
-  }
-  this.instance.view.scrollViewport(new _src.CellCoords(this.row, this.col));
-  this.instance.view.render();
-  this.state = EditorState.EDITING;
-
-  initialValue = typeof initialValue == 'string' ? initialValue : this.originalValue;
-  this.setValue((0, _mixed.stringify)(initialValue));
-
-  this.open(event);
-  this._opened = true;
-  this.focus();
-
-  // only rerender the selections (FillHandle should disappear when beginediting is triggered)
-  this.instance.view.render();
-
-  this.instance.runHooks('afterBeginEditing', this.row, this.col);
-};
-
-BaseEditor.prototype.finishEditing = function (restoreOriginalValue, ctrlDown, callback) {
-  var _this = this,
-      val;
-
-  if (callback) {
-    var previousCloseCallback = this._closeCallback;
-
-    this._closeCallback = function (result) {
-      if (previousCloseCallback) {
-        previousCloseCallback(result);
-      }
-
-      callback(result);
-      _this.instance.view.render();
-    };
-  }
-
-  if (this.isWaiting()) {
-    return;
-  }
-
-  if (this.state == EditorState.VIRGIN) {
-    this.instance._registerTimeout(setTimeout(function () {
-      _this._fireCallbacks(true);
-    }, 0));
-
-    return;
-  }
-
-  if (this.state == EditorState.EDITING) {
-    if (restoreOriginalValue) {
-      this.cancelChanges();
-      this.instance.view.render();
-
-      return;
-    }
-
-    var value = this.getValue();
-
-    if (this.instance.getSettings().trimWhitespace) {
-      // We trim only string values
-      val = [[typeof value === 'string' ? String.prototype.trim.call(value || '') : value]];
-    } else {
-      val = [[value]];
-    }
-
-    this.state = EditorState.WAITING;
-    this.saveValue(val, ctrlDown);
-
-    if (this.instance.getCellValidator(this.cellProperties)) {
-      this.instance.addHookOnce('postAfterValidate', function (result) {
-        _this.state = EditorState.FINISHED;
-        _this.discardEditor(result);
-      });
-    } else {
-      this.state = EditorState.FINISHED;
-      this.discardEditor(true);
-    }
-  }
-};
-
-BaseEditor.prototype.cancelChanges = function () {
-  this.state = EditorState.FINISHED;
-  this.discardEditor();
-};
-
-BaseEditor.prototype.discardEditor = function (result) {
-  if (this.state !== EditorState.FINISHED) {
-    return;
-  }
-  // validator was defined and failed
-  if (result === false && this.cellProperties.allowInvalid !== true) {
-    this.instance.selectCell(this.row, this.col);
-    this.focus();
-    this.state = EditorState.EDITING;
-    this._fireCallbacks(false);
-  } else {
-    this.close();
-    this._opened = false;
-    this._fullEditMode = false;
-    this.state = EditorState.VIRGIN;
-    this._fireCallbacks(true);
-  }
-};
-
-/**
- * Switch editor into full edit mode. In this state navigation keys don't close editor. This mode is activated
- * automatically after hit ENTER or F2 key on the cell or while editing cell press F2 key.
- */
-BaseEditor.prototype.enableFullEditMode = function () {
-  this._fullEditMode = true;
-};
-
-/**
- * Checks if editor is in full edit mode.
- *
- * @returns {Boolean}
- */
-BaseEditor.prototype.isInFullEditMode = function () {
-  return this._fullEditMode;
-};
-
-BaseEditor.prototype.isOpened = function () {
-  return this._opened;
-};
-
-BaseEditor.prototype.isWaiting = function () {
-  return this.state === EditorState.WAITING;
-};
-
-BaseEditor.prototype.checkEditorSection = function () {
-  var totalRows = this.instance.countRows();
-  var section = '';
-
-  if (this.row < this.instance.getSettings().fixedRowsTop) {
-    if (this.col < this.instance.getSettings().fixedColumnsLeft) {
-      section = 'top-left-corner';
-    } else {
-      section = 'top';
-    }
-  } else if (this.instance.getSettings().fixedRowsBottom && this.row >= totalRows - this.instance.getSettings().fixedRowsBottom) {
-    if (this.col < this.instance.getSettings().fixedColumnsLeft) {
-      section = 'bottom-left-corner';
-    } else {
-      section = 'bottom';
-    }
-  } else if (this.col < this.instance.getSettings().fixedColumnsLeft) {
-    section = 'left';
-  }
-
-  return section;
-};
-
-exports.default = BaseEditor;
-
-/***/ }),
-/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -13099,7 +12775,331 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /*** EXPORTS FROM exports-to-window-loader ***/
-window['numbro'] = __webpack_require__(46);
+window['numbro'] = __webpack_require__(40);
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys       = __webpack_require__(100)
+  , enumBugKeys = __webpack_require__(75);
+
+module.exports = Object.keys || function keys(O){
+  return $keys(O, enumBugKeys);
+};
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
+
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(32);
+module.exports = function(it){
+  return Object(defined(it));
+};
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 22.1.3.31 Array.prototype[@@unscopables]
+var UNSCOPABLES = __webpack_require__(11)('unscopables')
+  , ArrayProto  = Array.prototype;
+if(ArrayProto[UNSCOPABLES] == undefined)__webpack_require__(34)(ArrayProto, UNSCOPABLES, {});
+module.exports = function(key){
+  ArrayProto[UNSCOPABLES][key] = true;
+};
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.EditorState = undefined;
+
+var _src = __webpack_require__(14);
+
+var _mixed = __webpack_require__(21);
+
+var EditorState = exports.EditorState = {
+  VIRGIN: 'STATE_VIRGIN', // before editing
+  EDITING: 'STATE_EDITING',
+  WAITING: 'STATE_WAITING', // waiting for async validation
+  FINISHED: 'STATE_FINISHED'
+};
+
+function BaseEditor(instance) {
+  this.instance = instance;
+  this.state = EditorState.VIRGIN;
+
+  this._opened = false;
+  this._fullEditMode = false;
+  this._closeCallback = null;
+
+  this.init();
+}
+
+BaseEditor.prototype._fireCallbacks = function (result) {
+  if (this._closeCallback) {
+    this._closeCallback(result);
+    this._closeCallback = null;
+  }
+};
+
+BaseEditor.prototype.init = function () {};
+
+BaseEditor.prototype.getValue = function () {
+  throw Error('Editor getValue() method unimplemented');
+};
+
+BaseEditor.prototype.setValue = function (newValue) {
+  throw Error('Editor setValue() method unimplemented');
+};
+
+BaseEditor.prototype.open = function () {
+  throw Error('Editor open() method unimplemented');
+};
+
+BaseEditor.prototype.close = function () {
+  throw Error('Editor close() method unimplemented');
+};
+
+BaseEditor.prototype.prepare = function (row, col, prop, td, originalValue, cellProperties) {
+  this.TD = td;
+  this.row = row;
+  this.col = col;
+  this.prop = prop;
+  this.originalValue = originalValue;
+  this.cellProperties = cellProperties;
+  this.state = EditorState.VIRGIN;
+};
+
+BaseEditor.prototype.extend = function () {
+  var baseClass = this.constructor;
+
+  function Editor() {
+    baseClass.apply(this, arguments);
+  }
+
+  function inherit(Child, Parent) {
+    function Bridge() {}
+    Bridge.prototype = Parent.prototype;
+    Child.prototype = new Bridge();
+    Child.prototype.constructor = Child;
+
+    return Child;
+  }
+
+  return inherit(Editor, baseClass);
+};
+
+BaseEditor.prototype.saveValue = function (value, ctrlDown) {
+  var selection = void 0;
+  var tmp = void 0;
+
+  // if ctrl+enter and multiple cells selected, behave like Excel (finish editing and apply to all cells)
+  if (ctrlDown) {
+    selection = this.instance.getSelected();
+
+    if (selection[0] > selection[2]) {
+      tmp = selection[0];
+      selection[0] = selection[2];
+      selection[2] = tmp;
+    }
+    if (selection[1] > selection[3]) {
+      tmp = selection[1];
+      selection[1] = selection[3];
+      selection[3] = tmp;
+    }
+  } else {
+    selection = [this.row, this.col, null, null];
+  }
+
+  this.instance.populateFromArray(selection[0], selection[1], value, selection[2], selection[3], 'edit');
+};
+
+BaseEditor.prototype.beginEditing = function (initialValue, event) {
+  if (this.state != EditorState.VIRGIN) {
+    return;
+  }
+  this.instance.view.scrollViewport(new _src.CellCoords(this.row, this.col));
+  this.instance.view.render();
+  this.state = EditorState.EDITING;
+
+  initialValue = typeof initialValue == 'string' ? initialValue : this.originalValue;
+  this.setValue((0, _mixed.stringify)(initialValue));
+
+  this.open(event);
+  this._opened = true;
+  this.focus();
+
+  // only rerender the selections (FillHandle should disappear when beginediting is triggered)
+  this.instance.view.render();
+
+  this.instance.runHooks('afterBeginEditing', this.row, this.col);
+};
+
+BaseEditor.prototype.finishEditing = function (restoreOriginalValue, ctrlDown, callback) {
+  var _this = this,
+      val;
+
+  if (callback) {
+    var previousCloseCallback = this._closeCallback;
+
+    this._closeCallback = function (result) {
+      if (previousCloseCallback) {
+        previousCloseCallback(result);
+      }
+
+      callback(result);
+      _this.instance.view.render();
+    };
+  }
+
+  if (this.isWaiting()) {
+    return;
+  }
+
+  if (this.state == EditorState.VIRGIN) {
+    this.instance._registerTimeout(setTimeout(function () {
+      _this._fireCallbacks(true);
+    }, 0));
+
+    return;
+  }
+
+  if (this.state == EditorState.EDITING) {
+    if (restoreOriginalValue) {
+      this.cancelChanges();
+      this.instance.view.render();
+
+      return;
+    }
+
+    var value = this.getValue();
+
+    if (this.instance.getSettings().trimWhitespace) {
+      // We trim only string values
+      val = [[typeof value === 'string' ? String.prototype.trim.call(value || '') : value]];
+    } else {
+      val = [[value]];
+    }
+
+    this.state = EditorState.WAITING;
+    this.saveValue(val, ctrlDown);
+
+    if (this.instance.getCellValidator(this.cellProperties)) {
+      this.instance.addHookOnce('postAfterValidate', function (result) {
+        _this.state = EditorState.FINISHED;
+        _this.discardEditor(result);
+      });
+    } else {
+      this.state = EditorState.FINISHED;
+      this.discardEditor(true);
+    }
+  }
+};
+
+BaseEditor.prototype.cancelChanges = function () {
+  this.state = EditorState.FINISHED;
+  this.discardEditor();
+};
+
+BaseEditor.prototype.discardEditor = function (result) {
+  if (this.state !== EditorState.FINISHED) {
+    return;
+  }
+  // validator was defined and failed
+  if (result === false && this.cellProperties.allowInvalid !== true) {
+    this.instance.selectCell(this.row, this.col);
+    this.focus();
+    this.state = EditorState.EDITING;
+    this._fireCallbacks(false);
+  } else {
+    this.close();
+    this._opened = false;
+    this._fullEditMode = false;
+    this.state = EditorState.VIRGIN;
+    this._fireCallbacks(true);
+  }
+};
+
+/**
+ * Switch editor into full edit mode. In this state navigation keys don't close editor. This mode is activated
+ * automatically after hit ENTER or F2 key on the cell or while editing cell press F2 key.
+ */
+BaseEditor.prototype.enableFullEditMode = function () {
+  this._fullEditMode = true;
+};
+
+/**
+ * Checks if editor is in full edit mode.
+ *
+ * @returns {Boolean}
+ */
+BaseEditor.prototype.isInFullEditMode = function () {
+  return this._fullEditMode;
+};
+
+BaseEditor.prototype.isOpened = function () {
+  return this._opened;
+};
+
+BaseEditor.prototype.isWaiting = function () {
+  return this.state === EditorState.WAITING;
+};
+
+BaseEditor.prototype.checkEditorSection = function () {
+  var totalRows = this.instance.countRows();
+  var section = '';
+
+  if (this.row < this.instance.getSettings().fixedRowsTop) {
+    if (this.col < this.instance.getSettings().fixedColumnsLeft) {
+      section = 'top-left-corner';
+    } else {
+      section = 'top';
+    }
+  } else if (this.instance.getSettings().fixedRowsBottom && this.row >= totalRows - this.instance.getSettings().fixedRowsBottom) {
+    if (this.col < this.instance.getSettings().fixedColumnsLeft) {
+      section = 'bottom-left-corner';
+    } else {
+      section = 'bottom';
+    }
+  } else if (this.col < this.instance.getSettings().fixedColumnsLeft) {
+    section = 'left';
+  }
+
+  return section;
+};
+
+exports.default = BaseEditor;
 
 /***/ }),
 /* 47 */
@@ -13387,7 +13387,7 @@ var _autoResize = __webpack_require__(336);
 
 var _autoResize2 = _interopRequireDefault(_autoResize);
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 var _baseEditor2 = _interopRequireDefault(_baseEditor);
 
@@ -13949,7 +13949,7 @@ module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
 // 6 -> Array#findIndex
 var ctx      = __webpack_require__(35)
   , IObject  = __webpack_require__(72)
-  , toObject = __webpack_require__(43)
+  , toObject = __webpack_require__(44)
   , toLength = __webpack_require__(26)
   , asc      = __webpack_require__(313);
 module.exports = function(TYPE, $create){
@@ -17181,7 +17181,7 @@ module.exports = Object.create || function create(O, Properties){
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(41);
+var cof = __webpack_require__(42);
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
@@ -17256,7 +17256,7 @@ module.exports = function(exec, skipClosing){
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE            = __webpack_require__(53)
-  , createDesc     = __webpack_require__(42)
+  , createDesc     = __webpack_require__(43)
   , toIObject      = __webpack_require__(25)
   , toPrimitive    = __webpack_require__(70)
   , has            = __webpack_require__(24)
@@ -17315,7 +17315,7 @@ if(!setTask || !clearTask){
     delete queue[id];
   };
   // Node.js 0.8-
-  if(__webpack_require__(41)(process) == 'process'){
+  if(__webpack_require__(42)(process) == 'process'){
     defer = function(id){
       process.nextTick(ctx(run, id, 1));
     };
@@ -17401,7 +17401,7 @@ module.exports = function(KEY){
 "use strict";
 
 var $defineProperty = __webpack_require__(19)
-  , createDesc      = __webpack_require__(42);
+  , createDesc      = __webpack_require__(43);
 
 module.exports = function(object, index, value){
   if(index in object)$defineProperty.f(object, index, createDesc(0, value));
@@ -17414,7 +17414,7 @@ module.exports = function(object, index, value){
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(44)
+var addToUnscopables = __webpack_require__(45)
   , step             = __webpack_require__(108)
   , Iterators        = __webpack_require__(50)
   , toIObject        = __webpack_require__(25);
@@ -18119,7 +18119,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = Core;
 
-var _numbro = __webpack_require__(46);
+var _numbro = __webpack_require__(40);
 
 var _numbro2 = _interopRequireDefault(_numbro);
 
@@ -22587,7 +22587,7 @@ function addItem(key, item) {
 
 var utils = __webpack_require__(27);
 var error = __webpack_require__(18);
-var numbro = __webpack_require__(46);
+var numbro = __webpack_require__(40);
 
 //TODO
 exports.ASC = function() {
@@ -23901,7 +23901,7 @@ module.exports = __webpack_require__(49).getIteratorMethod = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(41)
+var cof = __webpack_require__(42)
   , TAG = __webpack_require__(11)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
@@ -24142,7 +24142,7 @@ if(new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(41);
+var cof = __webpack_require__(42);
 module.exports = Array.isArray || function isArray(arg){
   return cof(arg) == 'Array';
 };
@@ -24154,10 +24154,10 @@ module.exports = Array.isArray || function isArray(arg){
 "use strict";
 
 // 19.1.2.1 Object.assign(target, source, ...)
-var getKeys  = __webpack_require__(40)
+var getKeys  = __webpack_require__(41)
   , gOPS     = __webpack_require__(64)
   , pIE      = __webpack_require__(53)
-  , toObject = __webpack_require__(43)
+  , toObject = __webpack_require__(44)
   , IObject  = __webpack_require__(72)
   , $assign  = Object.assign;
 
@@ -24624,12 +24624,12 @@ var global         = __webpack_require__(13)
   , anObject       = __webpack_require__(20)
   , toIObject      = __webpack_require__(25)
   , toPrimitive    = __webpack_require__(70)
-  , createDesc     = __webpack_require__(42)
+  , createDesc     = __webpack_require__(43)
   , _create        = __webpack_require__(71)
   , gOPNExt        = __webpack_require__(321)
   , $GOPD          = __webpack_require__(78)
   , $DP            = __webpack_require__(19)
-  , $keys          = __webpack_require__(40)
+  , $keys          = __webpack_require__(41)
   , gOPD           = $GOPD.f
   , dP             = $DP.f
   , gOPN           = gOPNExt.f
@@ -24875,7 +24875,7 @@ $export($export.S, 'Object', {setPrototypeOf: __webpack_require__(110).set});
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP         = __webpack_require__(19).f
-  , createDesc = __webpack_require__(42)
+  , createDesc = __webpack_require__(43)
   , has        = __webpack_require__(24)
   , FProto     = Function.prototype
   , nameRE     = /^\s*function ([^ (]*)/
@@ -25025,7 +25025,7 @@ $export($export.P + $export.F * __webpack_require__(82)(STARTS_WITH), 'String', 
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(16)
-  , cof      = __webpack_require__(41)
+  , cof      = __webpack_require__(42)
   , MATCH    = __webpack_require__(11)('match');
 module.exports = function(it){
   var isRegExp;
@@ -25216,7 +25216,7 @@ __webpack_require__(65)('search', 1, function(defined, SEARCH, $search){
 
 var ctx            = __webpack_require__(35)
   , $export        = __webpack_require__(4)
-  , toObject       = __webpack_require__(43)
+  , toObject       = __webpack_require__(44)
   , call           = __webpack_require__(103)
   , isArrayIter    = __webpack_require__(104)
   , toLength       = __webpack_require__(26)
@@ -25286,7 +25286,7 @@ var $export = __webpack_require__(4);
 
 $export($export.P, 'Array', {copyWithin: __webpack_require__(325)});
 
-__webpack_require__(44)('copyWithin');
+__webpack_require__(45)('copyWithin');
 
 /***/ }),
 /* 141 */
@@ -25306,7 +25306,7 @@ $export($export.P + $export.F * forced, 'Array', {
     return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
-__webpack_require__(44)(KEY);
+__webpack_require__(45)(KEY);
 
 /***/ }),
 /* 142 */
@@ -25326,7 +25326,7 @@ $export($export.P + $export.F * forced, 'Array', {
     return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
-__webpack_require__(44)(KEY);
+__webpack_require__(45)(KEY);
 
 /***/ }),
 /* 143 */
@@ -25337,7 +25337,7 @@ var $export = __webpack_require__(4);
 
 $export($export.P, 'Array', {fill: __webpack_require__(326)});
 
-__webpack_require__(44)('fill');
+__webpack_require__(45)('fill');
 
 /***/ }),
 /* 144 */
@@ -25444,7 +25444,7 @@ $export($export.P, 'Array', {
   }
 });
 
-__webpack_require__(44)('includes');
+__webpack_require__(45)('includes');
 
 /***/ }),
 /* 153 */
@@ -25464,7 +25464,7 @@ $export($export.S, 'Object', {
 /* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getKeys   = __webpack_require__(40)
+var getKeys   = __webpack_require__(41)
   , toIObject = __webpack_require__(25)
   , isEnum    = __webpack_require__(53).f;
 module.exports = function(isEntries){
@@ -50066,7 +50066,7 @@ jStat.models = (function(){
 /***/ (function(module, exports, __webpack_require__) {
 
 var utils = __webpack_require__(27);
-var numbro = __webpack_require__(46);
+var numbro = __webpack_require__(40);
 var error = __webpack_require__(18);
 
 exports.UNIQUE = function () {
@@ -53293,9 +53293,9 @@ Handsontable.DefaultSettings = _defaultSettings2.default;
 Handsontable.EventManager = _eventManager2.default;
 Handsontable._getListenersCounter = _eventManager.getListenersCounter; // For MemoryLeak tests
 
-Handsontable.buildDate = "2017-09-08T05:57:44.572Z";
+Handsontable.buildDate = "2017-09-20T06:36:39.957Z";
 Handsontable.packageName = "@quantlab/handsontable";
-Handsontable.version = "0.33.8";
+Handsontable.version = "0.33.9";
 
 var baseVersion = undefined;
 
@@ -53404,7 +53404,7 @@ module.exports = Handsontable;
 
 var dP       = __webpack_require__(19)
   , anObject = __webpack_require__(20)
-  , getKeys  = __webpack_require__(40);
+  , getKeys  = __webpack_require__(41);
 
 module.exports = __webpack_require__(23) ? Object.defineProperties : function defineProperties(O, Properties){
   anObject(O);
@@ -53423,7 +53423,7 @@ module.exports = __webpack_require__(23) ? Object.defineProperties : function de
 "use strict";
 
 var create         = __webpack_require__(71)
-  , descriptor     = __webpack_require__(42)
+  , descriptor     = __webpack_require__(43)
   , setToStringTag = __webpack_require__(51)
   , IteratorPrototype = {};
 
@@ -53441,7 +53441,7 @@ module.exports = function(Constructor, NAME, next){
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has         = __webpack_require__(24)
-  , toObject    = __webpack_require__(43)
+  , toObject    = __webpack_require__(44)
   , IE_PROTO    = __webpack_require__(73)('IE_PROTO')
   , ObjectProto = Object.prototype;
 
@@ -53541,7 +53541,7 @@ var global    = __webpack_require__(13)
   , Observer  = global.MutationObserver || global.WebKitMutationObserver
   , process   = global.process
   , Promise   = global.Promise
-  , isNode    = __webpack_require__(41)(process) == 'process';
+  , isNode    = __webpack_require__(42)(process) == 'process';
 
 module.exports = function(){
   var head, last, notify;
@@ -53623,7 +53623,7 @@ module.exports = function(name){
 /* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getKeys   = __webpack_require__(40)
+var getKeys   = __webpack_require__(41)
   , toIObject = __webpack_require__(25);
 module.exports = function(object, el){
   var O      = toIObject(object)
@@ -53639,7 +53639,7 @@ module.exports = function(object, el){
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(40)
+var getKeys = __webpack_require__(41)
   , gOPS    = __webpack_require__(64)
   , pIE     = __webpack_require__(53);
 module.exports = function(it){
@@ -53736,7 +53736,7 @@ module.exports = function(){
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
-var toObject = __webpack_require__(43)
+var toObject = __webpack_require__(44)
   , toIndex  = __webpack_require__(57)
   , toLength = __webpack_require__(26);
 
@@ -53768,7 +53768,7 @@ module.exports = [].copyWithin || function copyWithin(target/*= 0*/, start/*= 0,
 "use strict";
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
-var toObject = __webpack_require__(43)
+var toObject = __webpack_require__(44)
   , toIndex  = __webpack_require__(57)
   , toLength = __webpack_require__(26);
 module.exports = function fill(value /*, start = 0, end = @length */){
@@ -55229,7 +55229,7 @@ exports.__esModule = true;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 var _baseEditor2 = _interopRequireDefault(_baseEditor);
 
@@ -57171,7 +57171,7 @@ var _event = __webpack_require__(10);
 
 var _element = __webpack_require__(1);
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 var _baseEditor2 = _interopRequireDefault(_baseEditor);
 
@@ -57482,7 +57482,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _numbro = __webpack_require__(46);
+var _numbro = __webpack_require__(40);
 
 var _numbro2 = _interopRequireDefault(_numbro);
 
@@ -60921,7 +60921,7 @@ var _event = __webpack_require__(10);
 
 var _unicode = __webpack_require__(17);
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 var _baseEditor2 = _interopRequireDefault(_baseEditor);
 
@@ -61684,6 +61684,14 @@ var _mixed = __webpack_require__(21);
 
 var _index = __webpack_require__(8);
 
+var _number = __webpack_require__(7);
+
+var _numbro = __webpack_require__(40);
+
+var _numbro2 = _interopRequireDefault(_numbro);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function isFormula(value) {
   if (value) {
     if (value[0] === '=') {
@@ -61707,11 +61715,9 @@ function isFormula(value) {
 function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
   (0, _index.getRenderer)('base').apply(this, arguments);
 
-  //set cellProperties
-  if (cellProperties.fontWeight != null) TD.style.fontWeight = cellProperties.fontWeight;
-  if (cellProperties.fontStyle != null) TD.style.fontStyle = cellProperties.fontStyle;
-  if (cellProperties.color != null) TD.style.color = cellProperties.color;
-  if (cellProperties.background != null) TD.style.background = cellProperties.background;
+  ['fontWeight', 'fontStyle', 'color', 'background'].forEach(function (property) {
+    TD.style[property] = cellProperties[property];
+  });
 
   if (isFormula(value)) {
     // translate coordinates into cellId
@@ -61773,7 +61779,7 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
     if (newValue) {
       if (newValue.result != null && _typeof(newValue.result) == 'object') {
         // kernel async formula
-        if (_typeof(newValue.result.onIOPub) == 'object') {
+        if (typeof newValue.result.onIOPub == 'function') {
           // kernel formula
           newValue.result.onIOPub = function (msg) {
             if (msg.content) {
@@ -61889,6 +61895,25 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
     }
   }
 
+  if (cellProperties.type == 'n' && (0, _number.isNumeric)(value)) {
+
+    value = (0, _numbro2.default)(value).format(cellProperties.format || '0.00');
+
+    var className = cellProperties.className || '';
+
+    var classArr = className.length ? className.split(' ') : [];
+
+    if (classArr.indexOf('htLeft') < 0 && classArr.indexOf('htCenter') < 0 && classArr.indexOf('htRight') < 0 && classArr.indexOf('htJustify') < 0) {
+      classArr.push('htRight');
+    }
+
+    if (classArr.indexOf('htNumeric') < 0) {
+      classArr.push('htNumeric');
+    }
+
+    cellProperties.className = classArr.join(' ');
+  }
+
   var escaped = (0, _mixed.stringify)(value);
   (0, _element.fastInnerText)(TD, escaped);
 }
@@ -61940,7 +61965,7 @@ exports.default = htmlRenderer;
 
 exports.__esModule = true;
 
-var _numbro = __webpack_require__(46);
+var _numbro = __webpack_require__(40);
 
 var _numbro2 = _interopRequireDefault(_numbro);
 
@@ -63714,7 +63739,7 @@ var _eventManager = __webpack_require__(5);
 
 var _eventManager2 = _interopRequireDefault(_eventManager);
 
-var _baseEditor = __webpack_require__(45);
+var _baseEditor = __webpack_require__(46);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

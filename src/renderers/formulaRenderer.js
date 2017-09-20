@@ -1,6 +1,8 @@
 import {fastInnerText, addClass, removeClass} from './../helpers/dom/element';
 import {stringify} from './../helpers/mixed';
 import {getRenderer} from './index';
+import {isNumeric} from './../helpers/number';
+import numbro from 'numbro';
 
 function isFormula(value) {
   if (value) {
@@ -25,15 +27,9 @@ function isFormula(value) {
 function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
   getRenderer('base').apply(this, arguments);
 
-  //set cellProperties
-  if(cellProperties.fontWeight != null)
-    TD.style.fontWeight = cellProperties.fontWeight;
-  if(cellProperties.fontStyle != null)
-    TD.style.fontStyle = cellProperties.fontStyle;
-  if(cellProperties.color != null)
-    TD.style.color = cellProperties.color;
-  if(cellProperties.background != null)
-    TD.style.background = cellProperties.background;
+  ['fontWeight', 'fontStyle', 'color', 'background'].forEach( property => {
+    TD.style[property] = cellProperties[property];
+  });
 
   if (isFormula(value)) {
     // translate coordinates into cellId
@@ -94,7 +90,7 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
 
     if(newValue){
       if(newValue.result != null && typeof newValue.result == 'object'){ // kernel async formula
-        if(typeof newValue.result.onIOPub == 'object'){
+        if(typeof newValue.result.onIOPub == 'function'){
           // kernel formula
           newValue.result.onIOPub = function(msg){
             if(msg.content){
@@ -211,6 +207,28 @@ function formulaRenderer(instance, TD, row, col, prop, value, cellProperties) {
       addClass(TD, 'formula');
     }
   }
+
+  /*
+  if (cellProperties.type == 'numeric' && isNumeric(value)) {
+
+    value = numbro(value).format(cellProperties.format || '0.00');
+
+    const className = cellProperties.className || '';
+
+    let classArr = className.length ? className.split(' ') : [];
+
+    if (classArr.indexOf('htLeft') < 0 && classArr.indexOf('htCenter') < 0 &&
+        classArr.indexOf('htRight') < 0 && classArr.indexOf('htJustify') < 0) {
+      classArr.push('htRight');
+    }
+
+    if (classArr.indexOf('htNumeric') < 0) {
+      classArr.push('htNumeric');
+    }
+
+    cellProperties.className = classArr.join(' ');
+  }
+  */
 
   var escaped = stringify(value);
   fastInnerText(TD, escaped);
